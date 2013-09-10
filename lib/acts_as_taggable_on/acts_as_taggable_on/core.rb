@@ -80,7 +80,7 @@ module ActsAsTaggableOn::Taggable
       #   User.tagged_with("awesome", "cool", :exclude => true)   # Users that are not tagged with awesome or cool
       #   User.tagged_with("awesome", "cool", :any => true)       # Users that are tagged with awesome or cool
       #   User.tagged_with("awesome", "cool", :match_all => true) # Users that are tagged with just awesome and cool
-      #   User.tagged_with("awesome", "cool", :owned_by => foo ) # Users that are tagged with just awesome and cool by 'foo'
+      #   User.tagged_with("awesome", "cool", :owned_by => foo )  # Users that are tagged with just awesome and cool by 'foo'
       def tagged_with(tags, options = {})
         tag_list = ActsAsTaggableOn::TagList.from(tags)
         empty_result = where("1 = 0")
@@ -198,6 +198,17 @@ module ActsAsTaggableOn::Taggable
           .having(having) \
           .order(options[:order]) \
           .readonly(false)
+      end
+
+      ##
+      # Return a scope of objects that are not tagged with the specified tags.
+      #
+      # @param tags The tags that we want to query for
+      #
+      # Example:
+      #   User.not_tagged_with("awesome", "cool")   # Users that are not tagged with awesome or cool
+      def not_tagged_with(tags, options={})
+        self.class.tagged_with(tags, { exclude: true }.merge(options))
       end
 
       def is_taggable?
@@ -355,7 +366,7 @@ module ActsAsTaggableOn::Taggable
               new_tags |= current_tags[index...current_tags.size] & shared_tags
 
               # Order the array of tag objects to match the tag list
-              new_tags = tags.map do |t| 
+              new_tags = tags.map do |t|
                 new_tags.find { |n| n.name.downcase == t.name.downcase }
               end.compact
             end

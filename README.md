@@ -124,6 +124,7 @@ User.tagged_with(["awesome", "cool"], :any => true)
 
 # Find a user that not tags with awesome or cool:
 User.tagged_with(["awesome", "cool"], :exclude => true)
+User.not_tagged_with(["awesome", "cool"])
 
 # Find a user with any of tags based on context:
 User.tagged_with(['awesome, cool'], :on => :tags, :any => true).tagged_with(['smart', 'shy'], :on => :skills, :any => true)

@@ -56,6 +56,19 @@ describe "Tagger" do
     tags.should match_array [@taggable2]
   end
 
+  it "only returns objects tagged by owned_by when not_tagged_with is called" do
+    @user2 = User.new
+    @taggable2 = TaggableModel.create(:name => "Jim Jones")
+    @taggable3 = TaggableModel.create(:name => "Jane Doe")
+
+    @user.tag(@taggable, :with => 'ruby', :on => :tags)
+    @user.tag(@taggable2, :with => 'java', :on => :tags)
+    @user2.tag(@taggable3, :with => 'java', :on => :tags)
+
+    tags = TaggableModel.not_tagged_with(%w(ruby), :owned_by => @user)
+    tags.should match_array [@taggable2]
+  end
+
   it "should not overlap tags from different taggers" do
     @user2 = User.new
     lambda{

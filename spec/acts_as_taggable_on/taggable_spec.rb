@@ -417,6 +417,7 @@ describe "Taggable" do
     steve = TaggableModel.create(:name => 'Steve', :tag_list => "happier")
 
     TaggableModel.tagged_with("lazy", :exclude => true).to_a.should == [frank, steve]
+    TaggableModel.not_tagged_with("lazy").to_a.should == [frank, steve]
   end
 
   it "should return an empty scope for empty tags" do
